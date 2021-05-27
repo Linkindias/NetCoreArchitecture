@@ -15,6 +15,7 @@ namespace DAL
         }
 
         public virtual DbSet<OneAccount> Account { get; set; }
+        public virtual DbSet<UserEventLog> UserEventLog { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -35,7 +35,7 @@ namespace DAL.Repo
             }
             catch (Exception e)
             {
-                return e.Message;
+                throw e;
             }
         }
 
@@ -49,7 +49,7 @@ namespace DAL.Repo
             }
             catch (Exception e)
             {
-                return e.Message;
+                throw e;
             }
         }
 
@@ -63,7 +63,7 @@ namespace DAL.Repo
             }
             catch (Exception e)
             {
-                return e.Message;
+                throw e;
             }
         }
 

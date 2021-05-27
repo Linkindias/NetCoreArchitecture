@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Base;
+using BLL.Model;
 using DAL.Repo;
 
 namespace BLL
@@ -29,6 +31,16 @@ namespace BLL
                         twoAccount = twoAccount.Account1,
                         twoName =  twoAccount.Name
                     }).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 登入
+        /// </summary>
+        /// <param name="account">帳號</param>
+        /// <param name="password">密碼</param>
+        public (string msg, Member member) LogIn(string account, string password)
+        {
+            return (string.Empty, new Member(0,"test",0,"user",0,"testdepart", "menus"));
         }
 
         public void Dispose()

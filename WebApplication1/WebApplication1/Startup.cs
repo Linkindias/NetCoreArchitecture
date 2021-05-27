@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using BLL;
 using DAL;
 using DAL.Repo;
+using DAL.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -58,7 +59,9 @@ namespace WebApplication1
 
             services.AddTransient<OneAccountRepository>();
             services.AddTransient<TwoAccountRepository>();
+            services.AddTransient<UserEventLogRepository>();
             services.AddScoped<MemberService>();
+            services.AddScoped<OperateLogService>();
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<IMemoryCache, MemoryCache>();
