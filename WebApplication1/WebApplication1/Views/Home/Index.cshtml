@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model TestModel
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="tab-content">
+        <div id="login" class="container tab-pane active">
+            @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { id = "logInform" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <div class="login-label"><label for="id">class code</label></div>
+                    <div class="login-input">
+                        @Html.TextBoxFor(m => Model.guid, new { @class = "form-control", placeholder = "請輸入您的帳號" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="login-label"><label for="pwd">account</label></div>
+                    <div class="login-input">
+                        @Html.TextBoxFor(m => m.account, new { @class = "form-control",  placeholder = "請輸入您的密碼" })
+                    </div>
+                </div>
+                <div class="login-btnbar">
+                    <button type="submit" class="btn btn-login" >登入</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

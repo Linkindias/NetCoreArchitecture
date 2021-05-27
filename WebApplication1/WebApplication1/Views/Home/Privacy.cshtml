@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+@model BLL.AccountVM
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+<div class="tab-content">
+    <div id="login" class="container tab-pane active">
+            <div class="form-group">
+                <div class="login-label"><label for="id">Acocunt</label></div>
+                <div class="login-input">
+                    @Html.TextBoxFor(m => Model.oneAccount, new { @class = "form-control", placeholder = "請輸入您的帳號" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="login-label"><label for="id">Name</label></div>
+                <div class="login-input">
+                    @Html.TextBoxFor(m => Model.oneName, new { @class = "form-control", placeholder = "請輸入您的帳號" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="login-label"><label for="id">Acocunt</label></div>
+                <div class="login-input">
+                    @Html.TextBoxFor(m => Model.twoAccount, new { @class = "form-control", placeholder = "請輸入您的帳號" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="login-label"><label for="id">Name</label></div>
+                <div class="login-input">
+                    @Html.TextBoxFor(m => Model.twoName, new { @class = "form-control", placeholder = "請輸入您的帳號" })
+                </div>
+            </div>
+    </div>
+</div>
