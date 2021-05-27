@@ -1,0 +1,2 @@
+# NetCoreArchitecture
+Architecture
