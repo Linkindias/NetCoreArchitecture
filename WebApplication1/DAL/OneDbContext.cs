@@ -1,4 +1,5 @@
 ﻿using DAL.Table;
+using DAL.TableModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Infrastructure.Internal;
 
@@ -16,6 +17,7 @@ namespace DAL
 
         public virtual DbSet<OneAccount> Account { get; set; }
         public virtual DbSet<UserEventLog> UserEventLog { get; set; }
+        public virtual DbSet<ExceptionLog> ExceptionLog { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +27,18 @@ namespace DAL
 
             modelBuilder.Entity<OneAccount>()
                 .Property(e => e.CardSerial)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ExceptionLog>()
+                .Property(e => e.OPR_IP)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ExceptionLog>()
+                .Property(e => e.ROUTE)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ExceptionLog>()
+                .Property(e => e.METHOD)
                 .IsUnicode(false);
         }
 

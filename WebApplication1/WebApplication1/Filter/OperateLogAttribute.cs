@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Razor.Language;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web.Http.Controllers;
 using BLL.Model;
 using IActionFilter = Microsoft.AspNetCore.Mvc.Filters.IActionFilter;
 
@@ -21,6 +25,19 @@ namespace OrganDonationFuneralSubsidy.Filter
         public OperateLogAttribute(Enums.OperateEvent OperateId)
         {
             this.OperateId = (int)OperateId;
+        }
+
+        /// <summary>
+        /// TODO aysnc
+        /// </summary>
+        /// <param name="actionContext"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="continuation"></param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> ExecuteActionFilterAsync(HttpActionContext actionContext, CancellationToken cancellationToken, Func<Task<HttpResponseMessage>> continuation)
+        {
+            HttpResponseMessage response = await continuation();
+            return response;
         }
 
         public void OnActionExecuted(ActionExecutedContext context)

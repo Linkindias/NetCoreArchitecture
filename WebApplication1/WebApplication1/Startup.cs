@@ -14,6 +14,7 @@ using DAL;
 using DAL.Repo;
 using DAL.Repository;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -35,6 +36,7 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+           
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSession(options =>
             {
@@ -60,8 +62,11 @@ namespace WebApplication1
             services.AddTransient<OneAccountRepository>();
             services.AddTransient<TwoAccountRepository>();
             services.AddTransient<UserEventLogRepository>();
+            services.AddTransient<ExceptionLogRepository>();
+            
             services.AddScoped<MemberService>();
             services.AddScoped<OperateLogService>();
+            services.AddScoped<ExceptionLogService>();
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<IMemoryCache, MemoryCache>();
@@ -80,6 +85,16 @@ namespace WebApplication1
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            var forwardingOptions = new ForwardedHeadersOptions()
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            forwardingOptions.KnownNetworks.Clear(); // Loopback by default, this should be temporary
+            forwardingOptions.KnownProxies.Clear(); // Update to include
+
+            app.UseForwardedHeaders(forwardingOptions);
+
             app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
