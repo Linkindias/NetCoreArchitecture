@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using WebApplication1.Filter;
 
 namespace WebApplication1
 {
@@ -44,7 +45,9 @@ namespace WebApplication1
                 options.Cookie.IsEssential = true;
             });
 
-            services.AddControllersWithViews().AddSessionStateTempDataProvider();
+            services.AddControllersWithViews(
+                options => options.Filters.Add(new ExceptionAttribute())
+                ).AddSessionStateTempDataProvider();
             services.AddControllers().AddNewtonsoftJson();
             services.AddControllers().AddJsonOptions(option =>
             {

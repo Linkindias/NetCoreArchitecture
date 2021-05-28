@@ -21,18 +21,8 @@ namespace WebApplication1.Filter
 {
     public class ExceptionAttribute : Attribute, IExceptionFilter
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
-        private readonly IModelMetadataProvider _modelMetadataProvider;
-
         private ExceptionLogService exceptionLogService;
 
-        public ExceptionAttribute(IHostingEnvironment hostingEnvironment, IModelMetadataProvider modelMetadataProvider,
-            ExceptionLogService exceptionLogService)
-        {
-            _hostingEnvironment = hostingEnvironment;
-            _modelMetadataProvider = modelMetadataProvider;
-            this.exceptionLogService = exceptionLogService;
-        }
         /// <summary>
         /// 發生異常進入
         /// </summary>
@@ -47,16 +37,10 @@ namespace WebApplication1.Filter
                 string parameters = string.Empty;
 
                 if (Method == "POST" || Method == "PUT" || Method == "DELETE")
-                {
-                    var stream = context.HttpContext.Request.Body;
+                    parameters = string.Join(",",context.HttpContext.Request.Form
+                                                                                    .Select(x => $"{x.Key}={x.Value.ToString()}")
+                                                                                    .ToList());
 
-                    using (var reader = new StreamReader(stream))
-                    {
-                        parameters = await reader.ReadToEndAsync();
-
-                        if (stream.CanSeek) stream.Seek(0, SeekOrigin.Begin);
-                    }
-                }
                 else
                     parameters = context.HttpContext.Request.QueryString.Value;
 

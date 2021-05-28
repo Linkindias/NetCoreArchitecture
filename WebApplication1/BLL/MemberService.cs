@@ -22,6 +22,7 @@ namespace BLL
 
         public AccountVM GetAccount(string account)
         {
+            //throw new Exception("test"); test exceptionAttribute
             return (from oneAcocunt in _oneAccountRepo.GetOneAccount(o => o.Account1.ToLower() == account.ToLower())
                     join twoAccount in _twoAccountRepo.GetTwoAccount(o => o == o) on oneAcocunt.Account1 equals twoAccount.Account1
                     select new AccountVM()
