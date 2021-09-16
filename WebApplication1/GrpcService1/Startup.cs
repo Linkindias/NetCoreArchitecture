@@ -17,18 +17,11 @@ namespace GrpcService1
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddGrpc();
-			//services.AddGrpcClient<Greeter.GreeterClient>(o =>
-			//	{
-			//		o.Address = new Uri("https://localhost:5001");
-			//	})
-			//	.AddInterceptor(() => new LoggingInterceptor())
-			//	.ConfigurePrimaryHttpMessageHandler(() =>
-			//	{
-			//		var handler = new HttpClientHandler();
-			//		handler.ClientCertificates.Add(LoadCertificate());
-			//		return handler;
-			//	});
+			services.AddGrpc(
+				options =>
+				{
+					options.Interceptors.Add<LogInterceptor>();
+				});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
