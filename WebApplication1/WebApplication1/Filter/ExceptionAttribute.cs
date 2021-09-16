@@ -67,9 +67,9 @@ namespace WebApplication1.Filter
                
                 this.exceptionLogService.CreateExceptionLog(new ExceptionLog()
                 {
-                    UPD_DTM = DateTime.Now,
-                    UPD_OPER = context.HttpContext.User.Identity.Name,
-                    OPR_IP = context.HttpContext.Connection.RemoteIpAddress.ToString(),
+                    CreateDate = DateTime.Now,
+                    CreateId = int.Parse(context.HttpContext.User.Identity.Name),
+                    IP = context.HttpContext.Connection.RemoteIpAddress.ToString(),
                     ROUTE = context.HttpContext.Request.GetDisplayUrl(),
                     METHOD = Method,
                     PARAMETER = parameters,

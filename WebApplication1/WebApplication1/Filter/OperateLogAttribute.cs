@@ -93,18 +93,12 @@ namespace OrganDonationFuneralSubsidy.Filter
                     }
                     this.OperateLogsService.CreateOperateLog(new UserEventLog()
                     {
-                        NameMachine = Environment.MachineName,
-                        IpAddress = httpContext.Connection.RemoteIpAddress.ToString(),
+                        Machine = Environment.MachineName,
+                        IP = httpContext.Connection.RemoteIpAddress.ToString(),
                         PageCode = PageCode,
                         Method = HttpMethod,
-                        UserDepartment = member == null ? string.Empty : member.DepartmentName,
-                        UserRoleId = member == null ? 0 : member.RoleId,
-                        UserAccountId = member == null ? 0 : member.Id,
-                        UserName = member == null ? string.Empty : member.Name,
-                        Logs = StrLog,
-                        State = OperateId,
-                        AddDate = DateTime.Now,
-                        AddOperater = member == null ? 0 : member.Id,
+                        CreateDate = DateTime.Now,
+                        CreateId = member == null ? 0 : member.Id,
                     });
                     break;
             }
@@ -140,18 +134,12 @@ namespace OrganDonationFuneralSubsidy.Filter
             if (PageCode == "Home" && HttpMethod == "LogOut")
                 this.OperateLogsService.CreateOperateLog(new UserEventLog()
                 {
-                    NameMachine = Environment.MachineName,
-                    IpAddress = httpContext.Connection.RemoteIpAddress.ToString(),
+                    Machine = Environment.MachineName,
+                    IP = httpContext.Connection.RemoteIpAddress.ToString(),
                     PageCode = PageCode,
                     Method = HttpMethod,
-                    UserDepartment = member == null ? string.Empty : member.DepartmentName,
-                    UserRoleId = member == null ? 0 : member.RoleId,
-                    UserAccountId = member == null ? 0 : member.Id,
-                    UserName = member == null ? string.Empty : member.Name,
-                    Logs = StrLog,
-                    State = OperateId,
-                    AddDate = DateTime.Now,
-                    AddOperater = member == null ? 0 : member.Id,
+                    CreateDate = DateTime.Now,
+                    CreateId = member == null ? 0 : member.Id,
                 });
         }
     }
