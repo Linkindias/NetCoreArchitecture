@@ -9,17 +9,15 @@
     public partial class ExceptionLog
     {
         [Key]
-        public int SerialNo { get; set; }
+        public int Id { get; set; }
 
-        public DateTime UPD_DTM { get; set; }
+        public DateTime CreateDate { get; set; }
 
-        [Required]
-        [StringLength(50)]
-        public string UPD_OPER { get; set; }
+        public int CreateId { get; set; }
 
         [Required]
-        [StringLength(50)]
-        public string OPR_IP { get; set; }
+        [StringLength(20)]
+        public string IP { get; set; }
 
         [Required]
         public string ROUTE { get; set; }

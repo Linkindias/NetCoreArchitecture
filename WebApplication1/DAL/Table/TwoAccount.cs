@@ -56,6 +56,5 @@
 
         public string Remark { get; set; }
 
-        public DateTime? PWExpireDate { get; set; }
     }
 }

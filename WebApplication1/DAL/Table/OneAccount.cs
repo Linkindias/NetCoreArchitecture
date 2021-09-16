@@ -39,22 +39,17 @@
         [StringLength(20)]
         public string LicenseNo { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedDate { get; set; }
 
-        public int CreatedBy { get; set; }
+        public int CreatedId { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
-        public int? UpdatedBy { get; set; }
+        public int? UpdatedId { get; set; }
 
         public byte DataState { get; set; }
 
         [StringLength(10)]
         public string IdNo { get; set; }
-
-        [StringLength(20)]
-        public string CardSerial { get; set; }
-
-        public byte? LogIn { get; set; }
     }
 }

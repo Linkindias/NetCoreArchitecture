@@ -602,3 +602,12 @@ WebApplication1/DAL/bin/Debug/netcoreapp3.1/Microsoft.AspNetCore.Http.Extensions
 WebApplication1/DAL/bin/Debug/netcoreapp3.1/Microsoft.AspNetCore.Http.Features.dll
 WebApplication1/DAL/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileProviders.Abstractions.dll
 WebApplication1/DAL/bin/Debug/netcoreapp3.1/Microsoft.Net.Http.Headers.dll
+/WebApplication1/.vs/WebApplication1/v16/TestStore/0
+/WebApplication1/Base/obj
+/WebApplication1/BLL/obj
+/WebApplication1/DAL/obj
+/WebApplication1/GrpcService1/obj
+/WebApplication1/GrpcService1/bin
+/WebApplication1/GrpcClient1/obj
+/WebApplication1/GrpcClient1/bin/Debug/netcoreapp3.1
+/WebApplication1/WebApplication1/obj

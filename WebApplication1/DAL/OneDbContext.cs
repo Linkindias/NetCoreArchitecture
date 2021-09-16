@@ -25,12 +25,8 @@ namespace DAL
                 .Property(e => e.IdNo)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<OneAccount>()
-                .Property(e => e.CardSerial)
-                .IsUnicode(false);
-
             modelBuilder.Entity<ExceptionLog>()
-                .Property(e => e.OPR_IP)
+                .Property(e => e.IP)
                 .IsUnicode(false);
 
             modelBuilder.Entity<ExceptionLog>()

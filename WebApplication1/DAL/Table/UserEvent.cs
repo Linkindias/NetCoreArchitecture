@@ -11,39 +11,24 @@ namespace DAL.Table
     {
         public int Id { get; set; }
 
-
-
         [Required]
         [StringLength(100)]
-        public string NameMachine { get; set; }
+        public string Machine { get; set; }
 
         [Required]
         [StringLength(20)]
-        public string IpAddress { get; set; }
+        public string IP { get; set; }
 
         [Required]
         [StringLength(100)]
         public string PageCode { get; set; }
 
         [Required]
-        [StringLength(10)]
+        [StringLength(30)]
         public string Method { get; set; }
 
-        [StringLength(100)]
-        public string UserDepartment { get; set; }
+        public int CreateId { get; set; }
 
-        public int UserRoleId { get; set; }
-        public int UserAccountId { get; set; }
-
-        [StringLength(100)]
-        public string UserName { get; set; }
-
-        public string Logs { get; set; }
-
-        public int State { get; set; }
-
-        public int AddOperater { get; set; }
-
-        public DateTime AddDate { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }
