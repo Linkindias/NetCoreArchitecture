@@ -30,5 +30,8 @@ namespace DAL.Table
         public int CreateId { get; set; }
 
         public DateTime CreateDate { get; set; }
+
+        [StringLength(100)]
+        public string Parameter { get; set; }
     }
 }

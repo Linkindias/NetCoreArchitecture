@@ -50,9 +50,8 @@ namespace OrganDonationFuneralSubsidy.Filter
             this.memberService = httpRequestMessage.GetService(typeof(MemberService)) as MemberService;
 
             string PageCode = controllerDescriptor.ControllerName;
-            string StrLog = string.Empty;
+            string Parameter = string.Empty;
             string HttpMethod = controllerDescriptor.ActionName;
-            string Account = string.Empty, Password = string.Empty;
             Member member = null;
 
             switch (httpContext.Request.Method)
@@ -62,12 +61,7 @@ namespace OrganDonationFuneralSubsidy.Filter
 
                     if (httpObject.Count > 0)
                     {
-                        if (PageCode == "Home" && HttpMethod == "LogIn") //登入頁面
-                        {
-                            Account = httpObject["account"];
-                            Password = httpObject["password"];
-                        }
-                        else
+                        if (PageCode != "Home" && HttpMethod != "LogIn") //登入頁面
                             member = Common.Get<Member>(httpContext.Session, "member");
 
                         JObject job = new JObject();
@@ -75,21 +69,7 @@ namespace OrganDonationFuneralSubsidy.Filter
                         {
                             job.Add(key, (string)httpObject[key]);
                         }
-
-                        if (PageCode == "Home" && HttpMethod == "LogIn") //登入頁面
-                        {
-                            var result = memberService.LogIn(Account, Password);
-                            if (string.IsNullOrEmpty(result.msg))
-                            {
-                                member = result.member;
-                                job.Add("LogInState", "Success");
-                            }
-                            else
-                            {
-                                job.Add("LogInState", result.msg);
-                            }
-                        }
-                        StrLog = JsonConvert.SerializeObject(job, Formatting.None);
+                        Parameter = JsonConvert.SerializeObject(job, Formatting.None);
                     }
                     this.OperateLogsService.CreateOperateLog(new UserEventLog()
                     {
@@ -99,6 +79,7 @@ namespace OrganDonationFuneralSubsidy.Filter
                         Method = HttpMethod,
                         CreateDate = DateTime.Now,
                         CreateId = member == null ? 0 : member.Id,
+                        Parameter = Parameter
                     });
                     break;
             }
