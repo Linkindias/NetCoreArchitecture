@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BLL;
 
 namespace GrpcService1
 {
@@ -22,6 +23,8 @@ namespace GrpcService1
 				{
 					options.Interceptors.Add<LogInterceptor>();
 				});
+
+			services.AddTransient<MemberService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

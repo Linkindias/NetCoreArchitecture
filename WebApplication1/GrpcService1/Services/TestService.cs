@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BLL;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 
 namespace GrpcService1
 {
 	public class TestService : Test.TestBase
+	{
+		private readonly ILogger<TestService> _logger;
+		private MemberService memberService;
+
+		public TestService(MemberService memberService, ILogger<TestService> logger)
 		{
-		private readonly ILogger<GreeterService> _logger;
-		public TestService(ILogger<GreeterService> logger)
-		{
+			this.memberService = memberService;
 			_logger = logger;
 		}
 

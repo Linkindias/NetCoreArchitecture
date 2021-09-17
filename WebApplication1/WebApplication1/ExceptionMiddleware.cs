@@ -8,6 +8,7 @@ namespace WebApplication1
 {
 	public class ExceptionMiddleware
 	{
+		//UseMiddleware startup
 		private readonly RequestDelegate _next;
 
 		public ExceptionMiddleware(RequestDelegate next)

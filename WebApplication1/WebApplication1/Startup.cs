@@ -25,6 +25,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 using WebApplication1.Filter;
+using AutoMapper;
+using BLL.MapperModel;
 
 namespace WebApplication1
 {
@@ -43,8 +45,6 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -64,9 +64,11 @@ namespace WebApplication1
 
             services.AddMemoryCache();
 
+            services.AddAutoMapper(typeof(MappingAccount));
+
             //DbContext
-            services.AddDbContext<OneDbContext>(options => options.UseSqlServer(Configuration.GetSection("OneContext").Value), ServiceLifetime.Transient);
-            services.AddDbContext<TwoDbContext>(options => options.UseSqlServer(Configuration.GetSection("TwoContext").Value), ServiceLifetime.Transient);
+            services.AddDbContext<OneDbContext>(options => options.UseSqlServer(Configuration.GetSection("OneContext").Value,builder => builder.EnableRetryOnFailure()), ServiceLifetime.Transient);
+            services.AddDbContext<TwoDbContext>(options => options.UseSqlServer(Configuration.GetSection("TwoContext").Value,builder => builder.EnableRetryOnFailure()), ServiceLifetime.Transient);
 
             services.AddTransient<OneAccountRepository>();
             services.AddTransient<TwoAccountRepository>();
@@ -76,6 +78,7 @@ namespace WebApplication1
             services.AddScoped<MemberService>();
             services.AddScoped<OperateLogService>();
             services.AddScoped<ExceptionLogService>();
+            
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<IMemoryCache, MemoryCache>();

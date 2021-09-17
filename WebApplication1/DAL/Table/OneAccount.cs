@@ -5,7 +5,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Account")]
+    [Table("OneAccount")]
     public partial class OneAccount
     {
         public int Id { get; set; }
@@ -23,32 +23,31 @@
         [StringLength(30)]
         public string Name { get; set; }
 
+        [Required]
         public int Sex { get; set; }
 
-        [Required]
         [StringLength(20)]
         public string Phone { get; set; }
 
         [StringLength(20)]
-        public string JotTitle { get; set; }
+        public string JobTitle { get; set; }
 
         [Required]
         [StringLength(50)]
         public string Email { get; set; }
 
-        [StringLength(20)]
-        public string LicenseNo { get; set; }
+        public DateTime CreateDate { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public int CreateId { get; set; }
 
-        public int CreatedId { get; set; }
+        public DateTime? UpdateDate { get; set; }
 
-        public DateTime? UpdatedDate { get; set; }
+        public int? UpdateId { get; set; }
 
-        public int? UpdatedId { get; set; }
+        [Required]
+        public int State { get; set; }
 
-        public byte DataState { get; set; }
-
+        [Required]
         [StringLength(10)]
         public string IdNo { get; set; }
     }

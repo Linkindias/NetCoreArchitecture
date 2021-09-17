@@ -35,7 +35,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Privacy", account);
         }
 
-        public IActionResult Privacy(AccountVM accountVm)
+        public IActionResult Privacy(PersonInfoVM accountVm)
         {
             return View(accountVm);
         }

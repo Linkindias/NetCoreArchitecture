@@ -2,6 +2,19 @@
 {
     public class Enums
     {
+	    public enum DataStatus
+	    {
+		    Disable = 0,
+            Enable = 1,
+            Lock = 2,
+	    }
+
+	    public enum Sex
+	    {
+            Male = 1,
+            Female = 2
+	    }
+
         public enum OperateEvent
         {
             Login = 1, //登入

@@ -5,7 +5,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Account")]
+    [Table("TwoAccount")]
     public partial class TwoAccount
     {
         public int Id { get; set; }
@@ -27,6 +27,7 @@
         [StringLength(10)]
         public string IdNo { get; set; }
 
+        [Required]
         public int Sex { get; set; }
 
         [StringLength(20)]
@@ -35,8 +36,6 @@
         [StringLength(20)]
         public string Phone { get; set; }
 
-        public DateTime? Birthday { get; set; }
-
         [Required]
         [StringLength(50)]
         public string Email { get; set; }
@@ -44,6 +43,7 @@
         [StringLength(50)]
         public string Address { get; set; }
 
+        [Required]
         public int State { get; set; }
 
         public int AddOperater { get; set; }
