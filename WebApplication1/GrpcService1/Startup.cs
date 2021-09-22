@@ -1,21 +1,29 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using BLL;
+using DAL;
+using DAL.Repo;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using BLL;
+using System.Configuration;
+using BLL.MapperModel;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 
 namespace GrpcService1
 {
 	public class Startup
 	{
-		// This method gets called by the runtime. Use this method to add services to the container.
-		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+		private IMemoryCache memoryCache { get; set; }
+		public IConfiguration Configuration { get; }
+
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
+
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddGrpc(
@@ -24,10 +32,19 @@ namespace GrpcService1
 					options.Interceptors.Add<LogInterceptor>();
 				});
 
+			services.AddAutoMapper(typeof(MappingAccount));
+
+			//DbContext
+			services.AddDbContext<OneDbContext>(options => options.UseSqlServer(Configuration.GetSection("OneContext").Value, builder => builder.EnableRetryOnFailure()), ServiceLifetime.Transient);
+			services.AddDbContext<TwoDbContext>(options => options.UseSqlServer(Configuration.GetSection("TwoContext").Value, builder => builder.EnableRetryOnFailure()), ServiceLifetime.Transient);
+
 			services.AddTransient<MemberService>();
+			services.AddTransient<OneAccountRepository>();
+			services.AddTransient<TwoAccountRepository>();
+
+			
 		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			if (env.IsDevelopment())
