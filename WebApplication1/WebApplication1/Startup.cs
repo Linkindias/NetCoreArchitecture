@@ -1,46 +1,40 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using BLL;
+using BLL.MapperModel;
 using DAL;
 using DAL.Repo;
 using DAL.Repository;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Net;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using AspNetCoreRateLimit;
 using WebApplication1.Filter;
-using AutoMapper;
-using BLL.MapperModel;
 
 namespace WebApplication1
 {
-    public class Startup
+	public class Startup
     {
-        private IConfiguration config { get; }
         private IMemoryCache memoryCache { get; set; }
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -62,9 +56,21 @@ namespace WebApplication1
                 option.JsonSerializerOptions.IgnoreNullValues = true;
             });
 
+            services.AddOptions();
+
             services.AddMemoryCache();
 
             services.AddAutoMapper(typeof(MappingAccount));
+
+            // 從 appsettings.json 讀取 IpRateLimiting 設定 
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+
+            // 從 appsettings.json 讀取 Ip Rule 設定
+            services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+
+            // 注入 counter and IP Rules 
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
 
             //DbContext
             services.AddDbContext<OneDbContext>(options => options.UseSqlServer(Configuration.GetSection("OneContext").Value,builder => builder.EnableRetryOnFailure()), ServiceLifetime.Transient);
@@ -78,10 +84,16 @@ namespace WebApplication1
             services.AddScoped<MemberService>();
             services.AddScoped<OperateLogService>();
             services.AddScoped<ExceptionLogService>();
-            
 
+            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<IMemoryCache, MemoryCache>();
+
+            // the clientId/clientIp resolvers use it.
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            // Rate Limit configuration 設定
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,6 +111,8 @@ namespace WebApplication1
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseIpRateLimiting();
 
             // for body streamReader
             app.Use((context, next) =>
