@@ -23,15 +23,16 @@ namespace WebApplication1.Controllers
 
         public IActionResult Index()
         {
-            return View(new TestModel()
-            {
-                guid = _member.guid.ToString()
-            });
+            return View();
         }
 
-        public IActionResult LogIn(TestModel testModel)
+        public IActionResult LogIn(LogInInputModel loginModel)
         {
-            var account =_member.GetAccount(testModel.account);
+	        if (!ModelState.IsValid)
+	        {
+		        return View("Index", loginModel);
+	        }
+            var account =_member.GetAccount(loginModel.account);
             return RedirectToAction("Privacy", account);
         }
 

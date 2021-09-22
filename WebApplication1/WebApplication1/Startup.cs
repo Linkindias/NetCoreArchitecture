@@ -22,7 +22,12 @@ using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using AspNetCoreRateLimit;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using WebApplication1.Filter;
+using WebApplication1.Models;
+using WebApplication1.Validator;
+using System.Reflection;
 
 namespace WebApplication1
 {
@@ -39,7 +44,15 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSession(options =>
+	        services.AddMvc().AddFluentValidation(fv =>
+	        {
+		        fv.ImplicitlyValidateChildProperties = true;
+		        fv.ImplicitlyValidateRootCollectionElements = true;
+		        fv.DisableDataAnnotationsValidation = true;
+                fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+	        });
+
+	        services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.Cookie.IsEssential = true;

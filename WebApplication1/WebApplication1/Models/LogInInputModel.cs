@@ -7,10 +7,7 @@ namespace WebApplication1.Models
 {
 	public class LogInInputModel
 	{
-		public string account {
-			get;
-			set;
-		}
+		public string account { get; set; }
 
 		public string password { get; set; }
 	}
