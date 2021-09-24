@@ -25,6 +25,7 @@
                     @Html.TextBoxFor(m => Model.twoAccount, new { @class = "form-control", placeholder = "請輸入您的帳號" })
                 </div>
             </div>
+			<input id="Button1" type="button" value="button" onclick="@("window.location.href='" + @Url.Action("Test","Home") + "'");"/>	
             @*<div class="form-group">
                 <div class="login-label"><label for="id">Name</label></div>
                 <div class="login-input">

@@ -3,6 +3,12 @@
 }
 @using System.Web.Http.ModelBinding
 @model LogInInputModel
+<script type="text/javascript">
+    function test() {
+        var date = setDateFormat('2021-09-24T10:00:00');
+        alert(date);
+    }
+</script>
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
@@ -35,9 +41,10 @@
                         }
                     </div>
                 </div>
-                <div class="login-btnbar">
-                    <button type="submit" class="btn btn-login" >登入</button>
-                </div>
+				<div class="login-btnbar">
+					<button type="submit" class="btn btn-login">登入</button>
+					<input id="Button1" type="button" value="button" onclick="test()" />	
+				</div>
             }
         </div>
     </div>

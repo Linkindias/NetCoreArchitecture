@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\GitHub\NetCoreArchitecture\WebApplication1\WebApplication1\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
+    <History>True|2021-09-24T04:25:28.3470143Z;True|2021-09-24T12:12:12.4325791+08:00;True|2021-09-24T12:11:32.9333431+08:00;True|2021-09-24T12:00:31.3356907+08:00;True|2021-09-23T10:27:15.5106648+08:00;True|2021-09-23T10:21:14.6628651+08:00;True|2021-09-23T10:12:23.0693753+08:00;</History>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bundleconfig.json">
+      <publishTime>09/24/2021 11:13:54</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

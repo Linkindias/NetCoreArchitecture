@@ -614,3 +614,7 @@ WebApplication1/DAL/bin/Debug/netcoreapp3.1/Microsoft.Net.Http.Headers.dll
 /WebApplication1/WebApplication1/bin/Debug/netcoreapp3.1
 /WebApplication1/DAL/bin/Debug/netcoreapp3.1
 /WebApplication1/BLL/bin/Debug/netcoreapp3.1
+/WebApplication1/Base/bin/Release/netcoreapp3.1
+/WebApplication1/BLL/bin/Release/netcoreapp3.1
+/WebApplication1/DAL/bin/Release/netcoreapp3.1
+/WebApplication1/WebApplication1/bin/Release/netcoreapp3.1

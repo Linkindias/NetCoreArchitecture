@@ -28,6 +28,7 @@ using WebApplication1.Filter;
 using WebApplication1.Models;
 using WebApplication1.Validator;
 using System.Reflection;
+using Microsoft.AspNetCore.CookiePolicy;
 
 namespace WebApplication1
 {
@@ -195,6 +196,12 @@ namespace WebApplication1
 
             app.UseForwardedHeaders(forwardingOptions);
 
+            app.UseCookiePolicy(new CookiePolicyOptions()
+            {
+                HttpOnly = HttpOnlyPolicy.Always,
+                Secure = CookieSecurePolicy.Always,
+                MinimumSameSitePolicy = SameSiteMode.Lax
+            });
             app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
