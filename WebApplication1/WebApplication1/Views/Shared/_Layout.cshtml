@@ -16,7 +16,13 @@
 	<script type="text/javascript" src="@Url.Content("~/lib/moment.js/moment.min.js")"></script>
 
 	@RenderSection("Scripts", required: false)
-	<environment exclude="Development,Production">
+
+	<environment include="Development">
+		<link rel="stylesheet" href="@Url.Content("~/css/site.css")"  asp-append-version="true"/>
+		<script src="@Url.Content("~/js/site.js")" crossorigin></script>
+	</environment>
+
+	<environment include="Production">
 		<link rel="stylesheet" href="@Url.Content("~/css/site.min.css")"  asp-append-version="true"/>
 		<script src="@Url.Content("~/js/site.min.js")" crossorigin></script>
 	</environment>
