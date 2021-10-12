@@ -25,7 +25,7 @@ namespace DAL.Repo
             return oneDbContext.Account.Where(funcWhere).AsQueryable();
         }
 
-        private string BatchCreateOneAccount(List<OneAccount> OneAccounts)
+        public string BatchCreateOneAccount(List<OneAccount> OneAccounts)
         {
             try
             {
@@ -39,7 +39,20 @@ namespace DAL.Repo
             }
         }
 
-        private string BatchUpdateOneAccount(List<OneAccount> OneAccounts)
+        public string BatchCreateOneAccountOfThousand(List<OneAccount> OneAccounts)
+        {
+	        try
+	        {
+		        oneDbContext.BulkInsert(OneAccounts);
+		        return string.Empty;
+	        }
+	        catch (Exception e)
+	        {
+		        throw e;
+	        }
+        }
+
+        public string BatchUpdateOneAccount(List<OneAccount> OneAccounts)
         {
             try
             {
@@ -53,7 +66,20 @@ namespace DAL.Repo
             }
         }
 
-        private string BatchDeleteOneAccount(List<OneAccount> OneAccounts)
+        public string BatchUpdateOneAccountOfThousand(List<OneAccount> OneAccounts)
+        {
+	        try
+	        {
+		        oneDbContext.BulkUpdate(OneAccounts);
+		        return string.Empty;
+	        }
+	        catch (Exception e)
+	        {
+		        throw e;
+	        }
+        }
+
+        public string BatchDeleteOneAccount(List<OneAccount> OneAccounts)
         {
             try
             {
@@ -65,6 +91,19 @@ namespace DAL.Repo
             {
                 throw e;
             }
+        }
+
+        public string BatchDeleteOneAccountOfThousand(List<OneAccount> OneAccounts)
+        {
+	        try
+	        {
+		        oneDbContext.BulkDelete(OneAccounts);
+		        return string.Empty;
+	        }
+	        catch (Exception e)
+	        {
+		        throw e;
+	        }
         }
 
         public void Dispose()
