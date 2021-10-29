@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using BLL;
+using BLL.Model;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -13,12 +14,12 @@ namespace WebApplication1.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private MemberService _member;
+        private MemberTestService _memberTest;
 
-        public HomeController(ILogger<HomeController> logger, MemberService memberService)
+        public HomeController(ILogger<HomeController> logger, MemberTestService memberTestService)
         {
             _logger = logger;
-            this._member = memberService;
+            this._memberTest = memberTestService;
         }
 
         public IActionResult Index()
@@ -32,8 +33,15 @@ namespace WebApplication1.Controllers
 	        {
 		        return View("Index", loginModel);
 	        }
-            var account =_member.GetAccount(loginModel.account);
-            return RedirectToAction("Privacy", account);
+            //var account =_memberTest.GetAccount(loginModel.account);
+            var account = _memberTest.TestLinqKitPredicate(new Member(0,string.Empty,0,string.Empty,0,string.Empty,null) { Account = loginModel.account });
+            return RedirectToAction("Privacy", new PersonInfoVM()
+            {
+                oneAccount = account.Account1,
+				name = account.Name, 
+                email = account.Email,
+                jobTitle = account.JobTitle,
+            });
         }
 
         public IActionResult Privacy(PersonInfoVM accountVm)

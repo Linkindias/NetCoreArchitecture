@@ -6,6 +6,7 @@ namespace BLL.Model
 {
     public class Member : IDisposable
     {
+	    public string Account { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
         public int RoleId { get; set; }

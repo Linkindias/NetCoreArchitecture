@@ -73,8 +73,9 @@ namespace WebApplication1
             services.AddOptions();
 
             services.AddMemoryCache();
+			services.AddResponseCaching();
 
-            services.AddAutoMapper(typeof(MappingAccount));
+			services.AddAutoMapper(typeof(MappingAccount));
 
             // 從 appsettings.json 讀取 IpRateLimiting 設定 
             services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
@@ -95,9 +96,22 @@ namespace WebApplication1
             services.AddTransient<UserEventLogRepository>();
             services.AddTransient<ExceptionLogRepository>();
             
-            services.AddScoped<MemberService>();
+            services.AddScoped<MemberTestService>();
             services.AddScoped<OperateLogService>();
             services.AddScoped<ExceptionLogService>();
+
+            services.AddTransient<CourseService>();
+            services.AddTransient<CourseHistoryService>();
+            services.AddTransient<DiscussService>();
+            services.AddTransient<ExamService>();
+            services.AddTransient<RollCallService>();
+            services.AddTransient<WorkService>();
+            services.AddTransient<ScoreService>();
+            services.AddTransient<TextBookService>();
+
+            services.AddTransient<AnnouncementService>();
+            services.AddTransient<GroupService>();
+            services.AddTransient<SettingService>();
 
             services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -187,7 +201,19 @@ namespace WebApplication1
 				return next(context);
 			});
 
-			var forwardingOptions = new ForwardedHeadersOptions()
+			//app.Use(async (ctx, next) =>
+			//	{
+			//		ctx.Request.GetTypedHeaders().CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+			//		{
+			//			Public = true,
+			//			MaxAge = TimeSpan.FromSeconds(60)
+			//		};
+			//		await next();
+			//	}
+			//);
+			app.UseResponseCaching();
+
+            var forwardingOptions = new ForwardedHeadersOptions()
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             };
@@ -208,7 +234,7 @@ namespace WebApplication1
 
             app.UseRouting();
 
-            app.UseAuthentication();
+			app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

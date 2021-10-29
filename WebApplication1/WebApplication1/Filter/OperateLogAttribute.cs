@@ -19,7 +19,7 @@ namespace OrganDonationFuneralSubsidy.Filter
     public class OperateLogAttribute : Attribute, IActionFilter
     {
         private OperateLogService OperateLogsService;
-        private MemberService memberService;
+        private MemberTestService _memberTestService;
         private readonly int OperateId;
 
         public OperateLogAttribute(Enums.OperateEvent OperateId)
@@ -47,7 +47,7 @@ namespace OrganDonationFuneralSubsidy.Filter
             var httpRequestMessage = context.HttpContext.RequestServices;
             var httpContext = context.HttpContext;
             this.OperateLogsService = httpRequestMessage.GetService(typeof(OperateLogService)) as OperateLogService;
-            this.memberService = httpRequestMessage.GetService(typeof(MemberService)) as MemberService;
+            this._memberTestService = httpRequestMessage.GetService(typeof(MemberTestService)) as MemberTestService;
 
             string PageCode = controllerDescriptor.ControllerName;
             string Parameter = string.Empty;
@@ -92,7 +92,7 @@ namespace OrganDonationFuneralSubsidy.Filter
             var httpRequestMessage = context.HttpContext.RequestServices;
             var httpContext = context.HttpContext;
             this.OperateLogsService = httpRequestMessage.GetService(typeof(OperateLogService)) as OperateLogService;
-            this.memberService = httpRequestMessage.GetService(typeof(MemberService)) as MemberService;
+            this._memberTestService = httpRequestMessage.GetService(typeof(MemberTestService)) as MemberTestService;
 
             string PageCode = controllerDescriptor.ControllerName;
             string StrLog = string.Empty;

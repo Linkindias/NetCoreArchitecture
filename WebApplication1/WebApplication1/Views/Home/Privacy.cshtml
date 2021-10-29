@@ -5,8 +5,10 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>
+<p>@Html.Label(@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</p>
 <div class="tab-content">
     <div id="login" class="container tab-pane active">
+		
             <div class="form-group">
                 <div class="login-label"><label for="id">Acocunt</label></div>
                 <div class="login-input">

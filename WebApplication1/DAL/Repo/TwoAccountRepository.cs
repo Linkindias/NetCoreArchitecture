@@ -25,7 +25,7 @@ namespace DAL.Repo
             return twoDbContext.Account.Where(funcWhere).AsQueryable();
         }
 
-        private string BatchCreateTwoAccount(List<TwoAccount> TwoAccounts)
+        public string BatchCreateTwoAccount(List<TwoAccount> TwoAccounts)
         {
             try
             {
@@ -39,7 +39,20 @@ namespace DAL.Repo
             }
         }
 
-        private string BatchUpdateTwoAccount(List<TwoAccount> TwoAccounts)
+        public string BatchCreateTwoAccountOfThousand(List<TwoAccount> TwoAccounts)
+        {
+	        try
+	        {
+		        twoDbContext.BulkInsert(TwoAccounts);
+		        return string.Empty;
+	        }
+	        catch (Exception e)
+	        {
+		        throw e;
+	        }
+        }
+
+        public string BatchUpdateTwoAccount(List<TwoAccount> TwoAccounts)
         {
             try
             {
@@ -53,7 +66,20 @@ namespace DAL.Repo
             }
         }
 
-        private string BatchDeleteTwoAccount(List<TwoAccount> TwoAccounts)
+        public string BatchUpdateTwoAccountOfThousand(List<TwoAccount> TwoAccounts)
+        {
+	        try
+	        {
+		        twoDbContext.BulkUpdate(TwoAccounts);
+		        return string.Empty;
+	        }
+	        catch (Exception e)
+	        {
+		        throw e;
+	        }
+        }
+
+        public string BatchDeleteTwoAccount(List<TwoAccount> TwoAccounts)
         {
             try
             {

@@ -13,6 +13,8 @@ namespace DAL
         {
             var sql = options.FindExtension<SqlServerOptionsExtension>();
             if (sql != null) connectionString = sql.ConnectionString;
+
+            //this.ChangeTracker.LazyLoadingEnabled = false;
         }
 
         public virtual DbSet<OneAccount> Account { get; set; }
