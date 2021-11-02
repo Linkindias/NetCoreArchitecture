@@ -28,6 +28,7 @@ using WebApplication1.Filter;
 using WebApplication1.Models;
 using WebApplication1.Validator;
 using System.Reflection;
+using Base;
 using Microsoft.AspNetCore.CookiePolicy;
 
 namespace WebApplication1
@@ -45,7 +46,10 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-	        services.AddMvc().AddFluentValidation(fv =>
+	        services.AddHttpClient<HttpClientHelper>();
+	        services.AddTransient<HttpClientHelper>();
+
+            services.AddMvc().AddFluentValidation(fv =>
 	        {
 		        fv.ImplicitlyValidateChildProperties = true;
 		        fv.ImplicitlyValidateRootCollectionElements = true;
@@ -77,18 +81,18 @@ namespace WebApplication1
 
 			services.AddAutoMapper(typeof(MappingAccount));
 
-            // 從 appsettings.json 讀取 IpRateLimiting 設定 
-            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+			// 從 appsettings.json 讀取 IpRateLimiting 設定 
+			services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
 
-            // 從 appsettings.json 讀取 Ip Rule 設定
-            services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+			// 從 appsettings.json 讀取 Ip Rule 設定
+			services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
 
-            // 注入 counter and IP Rules 
-            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+			// 注入 counter and IP Rules 
+			services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+			services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
 
-            //DbContext
-            services.AddDbContext<OneDbContext>(options => options.UseSqlServer(Configuration.GetSection("OneContext").Value,builder => builder.EnableRetryOnFailure()), ServiceLifetime.Transient);
+			//DbContext
+			services.AddDbContext<OneDbContext>(options => options.UseSqlServer(Configuration.GetSection("OneContext").Value,builder => builder.EnableRetryOnFailure()), ServiceLifetime.Transient);
             services.AddDbContext<TwoDbContext>(options => options.UseSqlServer(Configuration.GetSection("TwoContext").Value,builder => builder.EnableRetryOnFailure()), ServiceLifetime.Transient);
 
             services.AddTransient<OneAccountRepository>();
@@ -113,16 +117,18 @@ namespace WebApplication1
             services.AddTransient<GroupService>();
             services.AddTransient<SettingService>();
 
-            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.TryAddSingleton<IMemoryCache, MemoryCache>();
+            services.AddTransient<StudentMemberService>();
 
-            // the clientId/clientIp resolvers use it.
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.TryAddSingleton<IMemoryCache, MemoryCache>();
 
-            // Rate Limit configuration 設定
-            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-        }
+			// the clientId/clientIp resolvers use it.
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+			// Rate Limit configuration 設定
+			services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IAntiforgery antiforgery)
@@ -140,10 +146,10 @@ namespace WebApplication1
                 app.UseHsts();
             }
 
-            app.UseIpRateLimiting();
+			app.UseIpRateLimiting();
 
-            // for body streamReader
-            app.Use((context, next) =>
+			// for body streamReader
+			app.Use((context, next) =>
             {
                 context.Request.EnableBuffering();
                 return next();

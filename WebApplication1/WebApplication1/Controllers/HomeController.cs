@@ -15,11 +15,13 @@ namespace WebApplication1.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private MemberTestService _memberTest;
+        private readonly StudentMemberService _studentMemberService;
 
-        public HomeController(ILogger<HomeController> logger, MemberTestService memberTestService)
+        public HomeController(ILogger<HomeController> logger, MemberTestService memberTestService,StudentMemberService studentMemberService)
         {
             _logger = logger;
             this._memberTest = memberTestService;
+            _studentMemberService = studentMemberService;
         }
 
         public IActionResult Index()
@@ -49,10 +51,6 @@ namespace WebApplication1.Controllers
             return View(accountVm);
         }
 
-        public IActionResult Test()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
