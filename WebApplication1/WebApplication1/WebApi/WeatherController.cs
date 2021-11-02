@@ -31,8 +31,11 @@ namespace WebApplication1.WebApi
 		}
 
 		[HttpGet]
-		public WeatherModel Get()
+		public WeatherModel Get(string locationName)
 		{
+			if (!string.IsNullOrEmpty(locationName))
+				apiUrl = $"{apiUrl}&locationName={locationName}";
+
 			return Task<WeatherModel>.Run(async () => {
 
 				WeatherModel wm = new WeatherModel() { success = false };
