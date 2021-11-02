@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Base;
+using Base.Models;
 using WebApplication1.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,18 +16,15 @@ namespace WebApplication1.WebApi
 	[ApiController]
 	public class WeatherController : ControllerBase
 	{
-		private readonly IHttpClientFactory _clientFactory;
 		private readonly HttpClientHelper _httpClientHelper;
 		private string apiUrl = @"https://opendata.cwb.gov.tw/api/v1/rest/datastore/dataid?Authorization=apikey&format=JSON";
 		private string weatherId = @"F-C0032-001";
 		private string apikey = @"CWB-BC1EB9DB-7648-4419-8D75-870FAA8ADA2A";
 
-		public WeatherController(IHttpClientFactory clientFactory, HttpClientHelper httpClientHelper)
+		public WeatherController(HttpClientHelper httpClientHelper)
 		{
-			_clientFactory = clientFactory;
 			_httpClientHelper = httpClientHelper;
-			apiUrl = apiUrl
-							.Replace("apikey", apikey)
+			apiUrl = apiUrl.Replace("apikey", apikey)
 							.Replace("dataid", weatherId);
 		}
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace WebApplication1.Models
+namespace Base.Models
 {
 	public class WeatherModel
 	{
