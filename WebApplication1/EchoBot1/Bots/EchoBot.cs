@@ -37,45 +37,31 @@ namespace EchoBot1.Bots
 
 			else
 			{
-				var response = await _httpClientHelper.SendGet($"http://localhost/webapplication/api/Weather?locationName={replyText.Replace("台", "臺")}");
-
 				try
 				{
-					if (response.IsSuccessStatusCode)
+					WeatherModel weather = await _httpClientHelper.SendGet<WeatherModel>($"http://localhost/webapplication/api/Weather?locationName={replyText.Replace("台", "臺")}");
+
+					if (weather != null && weather.success && weather.records.location.Length > 0)
 					{
-						var stream = await response.Content.ReadAsStreamAsync();
+						string result = $"City : {weather.records.location[0].locationName}\r\n";
 
-						using (var streamReader = new StreamReader(stream))
+						var status = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "Wx");
+						var percentage = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "PoP");
+						var min = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "MinT");
+						var max = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "MaxT");
+						var ci = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "CI");
+					
+						if (status.time.Length > 0 && percentage.time.Length > 0 && max.time.Length > 0 && min.time.Length > 0 && ci.time.Length > 0)
 						{
-							using (var jsonTextReader = new JsonTextReader(streamReader))
-							{
-								var jsonSerializer = new JsonSerializer();
-								var weather = jsonSerializer.Deserialize<WeatherModel>(jsonTextReader);
-
-								if (weather.success && weather.records.location.Length > 0)
-								{
-									string result = $"City : {weather.records.location[0].locationName}\r\n";
-
-									var status = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "Wx");
-									var percentage = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "PoP");
-									var min = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "MinT");
-									var max = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "MaxT");
-									var ci = weather.records.location[0].weatherElement.FirstOrDefault(o => o.elementName == "CI");
-								
-									if (status.time.Length > 0 && percentage.time.Length > 0 && max.time.Length > 0 && min.time.Length > 0 && ci.time.Length > 0)
-									{
-										result += $"{status.time[0].startTime.ToString("yyyy/MM/dd HH:mm")} ~ {status.time[0].endTime.ToString("HH:mm")} \r\n";
-										result += $"{status.time[0].parameter.parameterName}, 下雨率 :{percentage.time[0].parameter.parameterName}% ,{min.time[0].parameter.parameterName}~{max.time[0].parameter.parameterName} C {ci.time[0].parameter.parameterName}\r\n";
-										result += $"{status.time[1].startTime.ToString("yyyy/MM/dd HH:mm")} ~ {status.time[1].endTime.ToString("HH:mm")} \r\n";
-										result += $"{status.time[1].parameter.parameterName}, 下雨率 :{percentage.time[1].parameter.parameterName}% ,{min.time[1].parameter.parameterName}~{max.time[1].parameter.parameterName} C {ci.time[1].parameter.parameterName}\r\n";
-										result += $"{status.time[2].startTime.ToString("yyyy/MM/dd HH:mm")} ~ {status.time[2].endTime.ToString("HH:mm")} \r\n";
-										result += $"{status.time[2].parameter.parameterName}, 下雨率 :{percentage.time[2].parameter.parameterName}% ,{min.time[2].parameter.parameterName}~{max.time[2].parameter.parameterName} C {ci.time[2].parameter.parameterName}\r\n";
-									}
-
-									await turnContext.SendActivityAsync(MessageFactory.Text(result), cancellationToken);
-								}
-							}
+							result += $"{status.time[0].startTime.ToString("yyyy/MM/dd HH:mm")} ~ {status.time[0].endTime.ToString("HH:mm")} \r\n";
+							result += $"{status.time[0].parameter.parameterName}, 下雨率 :{percentage.time[0].parameter.parameterName}% ,{min.time[0].parameter.parameterName}~{max.time[0].parameter.parameterName} C {ci.time[0].parameter.parameterName}\r\n";
+							result += $"{status.time[1].startTime.ToString("yyyy/MM/dd HH:mm")} ~ {status.time[1].endTime.ToString("HH:mm")} \r\n";
+							result += $"{status.time[1].parameter.parameterName}, 下雨率 :{percentage.time[1].parameter.parameterName}% ,{min.time[1].parameter.parameterName}~{max.time[1].parameter.parameterName} C {ci.time[1].parameter.parameterName}\r\n";
+							result += $"{status.time[2].startTime.ToString("yyyy/MM/dd HH:mm")} ~ {status.time[2].endTime.ToString("HH:mm")} \r\n";
+							result += $"{status.time[2].parameter.parameterName}, 下雨率 :{percentage.time[2].parameter.parameterName}% ,{min.time[2].parameter.parameterName}~{max.time[2].parameter.parameterName} C {ci.time[2].parameter.parameterName}\r\n";
 						}
+
+						await turnContext.SendActivityAsync(MessageFactory.Text(result), cancellationToken);
 					}
 				}
 				catch (Exception ex)
