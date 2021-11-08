@@ -49,50 +49,69 @@ namespace WebApplication1.WebApi
 		{
 			return Task<ResultModel>.Run(async () =>
 			{
-				//Dictionary<string, string> stringDictionary = new Dictionary<string, string>() { { "test", "ddd" } };
-				//List<StreamModel> listStream = new List<StreamModel>();
+				Dictionary<string, string> stringDictionary = new Dictionary<string, string>() { { "test", "ddd" } };
+				List<StreamModel> listStream = new List<StreamModel>();
 
-				//string[] filePaths = Directory.GetFiles("D:\\Device", "*.png", SearchOption.AllDirectories);
+				string[] filePaths = Directory.GetFiles("D:\\Device", "*.png", SearchOption.AllDirectories);
 
-				//foreach (string filePath in filePaths)
-				//{
-				//	string[] arFiles = filePath.Split('\\');
-				//	string fileName = arFiles[^1];
-				//	Stream fileStream = System.IO.File.OpenRead(filePath);
-				//	listStream.Add(new StreamModel() { Stream = fileStream , Name = "files", FileName = fileName });
-				//}
-				//return await _httpClientHelper.SendPostForDocument<ResultModel>($"https://localhost:44349/api/Weather/Upload", stringDictionary, listStream);
-				List<KeyValuePair<string,string>> lstKeyValues = new List<KeyValuePair<string,string>>()
+				foreach (string filePath in filePaths)
 				{
-					new KeyValuePair<string, string>("name","joen"), new KeyValuePair<string, string>("value", "test")
-				};
+					string[] arFiles = filePath.Split('\\');
+					string fileName = arFiles[^1];
+					Stream fileStream = System.IO.File.OpenRead(filePath);
+					listStream.Add(new StreamModel() { Stream = fileStream, Name = "files", FileName = fileName });
+				}
+				return await _httpClientHelper.SendPostForDocument<ResultModel>($"https://localhost:44349/api/weather/Upload", stringDictionary, listStream);
 
-				return await _httpClientHelper.SendPostForForm<ResultModel>($"https://localhost:44349/api/Weather/Upload", lstKeyValues);
+				//application/x-www-form-urlencoded
+				//List<KeyValuePair<string, string>> lstKeyValues = new List<KeyValuePair<string, string>>()
+				//{
+				//	new KeyValuePair<string, string>("Name","joen"), new KeyValuePair<string, string>("Value", "test")
+				//};
+				//return await _httpClientHelper.SendPostForForm<ResultModel>($"https://localhost:44349/api/Weather/Upload", lstKeyValues);
+
+				//json
+				//var jsonVariable = new { Name = "John Doe", Value = "33" };
+				//return await _httpClientHelper.SendPostForJson<ResultModel>($"https://localhost:44349/api/Weather/Upload", jsonVariable);
+
 			}).Result; 
 		}
 
-		[Route("Upload")]
-		[HttpPost]
-		public ResultModel Post([FromForm] FormUrlencodedModel model)
-		{
-			if (model != null)
-			{
-				return new ResultModel() { success = true, msg = string.Empty };
-			}
-
-			return new ResultModel() { success = false, msg = "Error" };
-		}
-		//[Route("Upload")]
+		//[Route("Upload")] //Json use
 		//[HttpPost]
-		//public ResultModel Post([FromForm] MultipartFormDataModel model) //multipart/form-data、application/x-www-form-urlencoded use FromForm, json use FromBody
+		//public ResultModel Post([FromBody] FormUrlencodedModel model)
 		//{
 		//	if (model != null)
 		//	{
-		//		return new ResultModel() { success = true, msg = string.Empty };
+		//		return new ResultModel() { success = true, msg = $"{model.name}-{model.value}" };
 		//	}
 
 		//	return new ResultModel() { success = false, msg = "Error" };
 		//}
+
+		//[Route("Upload")] //application/x-www-form-urlencoded use FromForm
+		//[HttpPost]
+		//public ResultModel Post([FromForm] FormUrlencodedModel model) 
+		//{
+		//	if (model != null)
+		//	{
+		//		return new ResultModel() { success = true, msg = $"{model.name}-{model.value}"};
+		//	}
+
+		//	return new ResultModel() { success = false, msg = "Error" };
+		//}
+
+		[Route("Upload")]  //multipart/form-data
+		[HttpPost]
+		public ResultModel Post([FromForm] MultipartFormDataModel model)
+		{
+			if (model != null)
+			{
+				return new ResultModel() { success = true, msg = $"{model.Test}-{model.Files.Count}" };
+			}
+
+			return new ResultModel() { success = false, msg = "Error" };
+		}
 
 		// PUT api/<WeatherController>/5
 		[HttpPut("{id}")]
