@@ -13,99 +13,77 @@ namespace ConsoleApp1
 		static string package = "com.example.kotlinsampleapplication"; //app domain
 		static string startActivity = ".MainActivity"; //start activity
 
+		private static string startAppCommand = $"/c adb shell am start -a {package}{startActivity} -n {package}/{package}{startActivity}";
+		private static string installAppCommand = $"/c adb shell pm install -r /storage/emulated/0/Download/app-debug.apk";
+		private static string unInstallAppCommand = $"/c adb shell pm uninstall {package}";
+		private static string checkDeviceCommand = "/c adb devices";
+		private static string disconDeviceCommand = "/c adb disconnect";
+		private static string conDeviceCommand = "/c adb connect";
+
+		static Process process = new Process();
+
 		static void Main(string[] args)
 		{
 			List<string> ips = new List<string>() { "10.168.18.50" }; //devices ip
 			
-			Process process = new Process();
 			process.StartInfo.FileName = "cmd.exe";
 			process.StartInfo.UseShellExecute = false;
 			process.StartInfo.RedirectStandardInput = true;
 			process.StartInfo.RedirectStandardOutput = true;
 			process.StartInfo.RedirectStandardError = true;
 
-			var outDevices = QueryDevicesConnect(process);
+			var outDevices = QueryDevicesConnect();
 
-			bool isDiscon = SetDevicesDisconnect(outDevices, process);
+			bool isDiscon = SetDevicesDisconnect(outDevices);
 
 			if (isDiscon) 
 				ips.ForEach(o =>
 				{
-					SetDeviceConnect(process, o);
+					executeProcess($"{conDeviceCommand} {o}");
 
-					var outConnectDevice = QueryDevicesConnect(process);
+					var outConnectDevice = QueryDevicesConnect();
 
 					var connectDevice = outConnectDevice.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
 					if (IsSameDevice(connectDevice, o))
 					{
 						Console.WriteLine($"Connected Devices :{o}");
 
-						if (SetDeviceUnInstall(process) == "Success\r\n")
+						if (executeProcess(unInstallAppCommand) == "Success\r\n")
 						{
 							Console.WriteLine($"UnInstalled :{package}");
 
-							if (SetDeviceInstall(process) == "Success\r\n")
+							if (executeProcess(installAppCommand) == "Success\r\n")
 							{
 								Console.WriteLine($"Installed :{package}");
 
-								if (IsStartApp(process)) 
+								if (IsStartApp()) 
 									Console.WriteLine($"Start App :{package}");
 							}
 						}
 					}
 
-					SetDevicesDisconnect(outConnectDevice, process);
+					SetDevicesDisconnect(outConnectDevice);
 				});
 		}
 
-		private static bool IsStartApp(Process process)
+		private static bool IsStartApp()
 		{
-			return StartApp(process) == "Starting: Intent { act=" + package + startActivity + " cmp=" + package + "/" + startActivity + " }\r\n";
+			return executeProcess(startAppCommand) == "Starting: Intent { act=" + package + startActivity + " cmp=" + package + "/" + startActivity + " }\r\n";
 		}
 
-		private static string StartApp(Process process)
+		private static string executeProcess(string command)
 		{
-			process.StartInfo.Arguments = $"/c adb shell am start -a {package}{startActivity} -n {package}/{package}{startActivity}";
+			process.StartInfo.Arguments = command;
 			process.Start();
 
-			string outStartApp = string.Empty;
+			string outResult = string.Empty;
 			while (!process.StandardOutput.EndOfStream)
 			{
-				outStartApp = process.StandardOutput.ReadLine() + Environment.NewLine;
-			}
-			
-			process.WaitForExit();
-			return outStartApp;
-		}
-
-		private static string SetDeviceInstall(Process process)
-		{
-			process.StartInfo.Arguments = $"/c adb shell pm install -r /storage/emulated/0/Download/app-debug.apk";
-			process.Start();
-
-			string outInstall = string.Empty;
-			while (!process.StandardOutput.EndOfStream)
-			{
-				outInstall = process.StandardOutput.ReadLine() + Environment.NewLine;
+				outResult = process.StandardOutput.ReadLine() + Environment.NewLine;
 			}
 
 			process.WaitForExit();
-			return outInstall;
-		}
-
-		private static string SetDeviceUnInstall(Process process)
-		{
-			process.StartInfo.Arguments = $"/c adb shell pm uninstall {package}";
-			process.Start();
-
-			string outUnInstall = string.Empty;
-			while (!process.StandardOutput.EndOfStream)
-			{
-				outUnInstall = process.StandardOutput.ReadLine() + Environment.NewLine;
-			}
-
-			process.WaitForExit();
-			return outUnInstall;
+			return outResult;
 		}
 
 		private static bool IsSameDevice(string[] connectDevice, string o)
@@ -113,21 +91,7 @@ namespace ConsoleApp1
 			return connectDevice.Length > 1 && connectDevice[1].IndexOf(o) > -1 && connectDevice[1].IndexOf("device") > -1;
 		}
 
-		private static void SetDeviceConnect(Process process, string ip)
-		{
-			process.StartInfo.Arguments = $"/c adb connect {ip}";
-			process.Start();
-
-			string outConnect = string.Empty;
-			while (!process.StandardOutput.EndOfStream)
-			{
-				outConnect = process.StandardOutput.ReadLine() + Environment.NewLine;
-			}
-
-			process.WaitForExit();
-		}
-
-		private static bool SetDevicesDisconnect(string outDevices, Process process)
+		private static bool SetDevicesDisconnect(string outDevices)
 		{
 			bool isDiscon = true;
 
@@ -135,16 +99,7 @@ namespace ConsoleApp1
 			{
 				isDiscon = false;
 
-				process.StartInfo.Arguments = "/c adb disconnect";
-				process.Start();
-
-				string outDisconnect = string.Empty;
-				while (!process.StandardOutput.EndOfStream)
-				{
-					outDisconnect = process.StandardOutput.ReadLine() + Environment.NewLine;
-				}
-
-				if (outDisconnect == "disconnected everything\r\n") isDiscon = true;
+				if (executeProcess(disconDeviceCommand) == "disconnected everything\r\n") isDiscon = true;
 			}
 
 			process.WaitForExit();
@@ -156,9 +111,9 @@ namespace ConsoleApp1
 			return outDevices.Split("\r\n", StringSplitOptions.RemoveEmptyEntries).Length > 1;
 		}
 
-		private static string QueryDevicesConnect(Process process)
+		private static string QueryDevicesConnect()
 		{
-			process.StartInfo.Arguments = "/c adb devices";
+			process.StartInfo.Arguments = checkDeviceCommand;
 			process.Start();
 
 			string outDevices = null;
