@@ -19,59 +19,99 @@ namespace ConsoleApp1
 		private static string checkDeviceCommand = "/c adb devices";
 		private static string disconDeviceCommand = "/c adb disconnect";
 		private static string conDeviceCommand = "/c adb connect";
+		private static string pingCommand = "/c ping";
 
 		static Process process = new Process();
 
 		static void Main(string[] args)
 		{
-			List<string> ips = new List<string>() { "10.168.18.50" }; //devices ip
-			
+			List<string> connectDevices = new List<string>() { "10.168.18.50" }; 
+			List<string> dicconDevices = new List<string>(); 
+			List<string> notInstallDevices = new List<string>(); 
+			List<string> notStartDevices = new List<string>(); 
+
 			process.StartInfo.FileName = "cmd.exe";
 			process.StartInfo.UseShellExecute = false;
 			process.StartInfo.RedirectStandardInput = true;
 			process.StartInfo.RedirectStandardOutput = true;
 			process.StartInfo.RedirectStandardError = true;
 
-			var outDevices = QueryDevicesConnect();
+			bool isDiscon = DisconnectDevices();
 
-			bool isDiscon = SetDevicesDisconnect(outDevices);
-
-			if (isDiscon) 
-				ips.ForEach(o =>
+			if (isDiscon)
+				connectDevices.ForEach(o =>
 				{
-					executeProcess($"{conDeviceCommand} {o}");
-
-					var outConnectDevice = QueryDevicesConnect();
-
-					var connectDevice = outConnectDevice.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
-					if (IsSameDevice(connectDevice, o))
+					if (IsPingDevice(o))
 					{
-						Console.WriteLine($"Connected Devices :{o}");
+						Console.WriteLine($"Ping Devices :{o}");
 
-						if (executeProcess(unInstallAppCommand) == "Success\r\n")
+						ConnectDevice(o);
+
+						if (IsSameDevice(o))
 						{
-							Console.WriteLine($"UnInstalled :{package}");
+							Console.WriteLine($"Connected Devices :{o}");
 
-							if (executeProcess(installAppCommand) == "Success\r\n")
+							if (UnInstallApp() == "Success\r\n") Console.WriteLine($"UnInstalled :{package}");
+
+							if (InstallApp() == "Success\r\n")
 							{
 								Console.WriteLine($"Installed :{package}");
 
-								if (IsStartApp()) 
+								if (IsStartApp())
+								{
 									Console.WriteLine($"Start App :{package}");
+									return;
+								}
+								notStartDevices.Add(o);
+								Console.WriteLine($"NotStart App :{o}");
 							}
+							notInstallDevices.Add(o);
+							Console.WriteLine($"NotInstall Devices :{o}");
 						}
+						DisconnectDevices();
 					}
-
-					SetDevicesDisconnect(outConnectDevice);
+					else
+					{
+						Console.WriteLine($"Discon Device :{o}");
+						dicconDevices.Add(o);
+					}
 				});
+			process.WaitForExit();
 		}
 
-		private static bool IsStartApp()
+		private static string InstallApp()
 		{
-			return executeProcess(startAppCommand) == "Starting: Intent { act=" + package + startActivity + " cmp=" + package + "/" + startActivity + " }\r\n";
+			return ExecCmdSingleResult(installAppCommand);
 		}
 
-		private static string executeProcess(string command)
+		private static string UnInstallApp()
+		{
+			return ExecCmdSingleResult(unInstallAppCommand);
+		}
+
+		private static void ConnectDevice(string o)
+		{
+			ExecCmdSingleResult($"{conDeviceCommand} {o}");
+		}
+
+		private static bool DisconnectDevices()
+		{
+			var outDevices = ExecCmdAllResult(checkDeviceCommand);
+
+			bool isDiscon = true;
+
+			if (IsConnectDevice(outDevices))
+			{
+				isDiscon = false;
+
+				if (IsDisconnectDevices()) isDiscon = true;
+			}
+
+			process.WaitForExit();
+			return isDiscon;
+		}
+
+		private static string ExecCmdSingleResult(string command)
 		{
 			process.StartInfo.Arguments = command;
 			process.Start();
@@ -86,34 +126,9 @@ namespace ConsoleApp1
 			return outResult;
 		}
 
-		private static bool IsSameDevice(string[] connectDevice, string o)
+		private static string ExecCmdAllResult(string command)
 		{
-			return connectDevice.Length > 1 && connectDevice[1].IndexOf(o) > -1 && connectDevice[1].IndexOf("device") > -1;
-		}
-
-		private static bool SetDevicesDisconnect(string outDevices)
-		{
-			bool isDiscon = true;
-
-			if (IsConnectDevice(outDevices))
-			{
-				isDiscon = false;
-
-				if (executeProcess(disconDeviceCommand) == "disconnected everything\r\n") isDiscon = true;
-			}
-
-			process.WaitForExit();
-			return isDiscon;
-		}
-
-		private static bool IsConnectDevice(string outDevices)
-		{
-			return outDevices.Split("\r\n", StringSplitOptions.RemoveEmptyEntries).Length > 1;
-		}
-
-		private static string QueryDevicesConnect()
-		{
-			process.StartInfo.Arguments = checkDeviceCommand;
+			process.StartInfo.Arguments = command;
 			process.Start();
 
 			string outDevices = null;
@@ -124,6 +139,35 @@ namespace ConsoleApp1
 
 			process.WaitForExit();
 			return outDevices;
+		}
+
+		private static bool IsPingDevice(string o)
+		{
+			var pingDevice = ExecCmdAllResult($"{pingCommand} {o}").Split("\r\n", StringSplitOptions.RemoveEmptyEntries); ;
+
+			return pingDevice.Length > 1 && pingDevice[1].IndexOf($"回覆自 {o}: 位元組=32 時間<1ms TTL=64") > -1;
+		}
+
+		private static bool IsStartApp()
+		{
+			return ExecCmdSingleResult(startAppCommand) == "Starting: Intent { act=" + package + startActivity + " cmp=" + package + "/" + startActivity + " }\r\n";
+		}
+	
+		private static bool IsSameDevice(string o)
+		{
+			var connectDevice = ExecCmdAllResult(checkDeviceCommand).Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+
+			return connectDevice.Length > 1 && connectDevice[1].IndexOf(o) > -1 && connectDevice[1].IndexOf("device") > -1;
+		}
+
+		private static bool IsConnectDevice(string outDevices)
+		{
+			return outDevices.Split("\r\n", StringSplitOptions.RemoveEmptyEntries).Length > 1;
+		}
+
+		private static bool IsDisconnectDevices()
+		{
+			return ExecCmdSingleResult(disconDeviceCommand) == "disconnected everything\r\n";
 		}
 	}
 }
