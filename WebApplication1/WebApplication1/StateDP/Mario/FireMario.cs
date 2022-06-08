@@ -17,7 +17,7 @@
 		public override void GetHarm()
 		{
 			base.mg.ChangeMario(new SuperMario(base.mg));
-			base.scroe -= 100;
+			base.mg.scroe -= 100;
 		}
 
 		public override void SetRevive()

@@ -22,7 +22,7 @@
 		public override void SetRevive()
 		{
 			base.mg.ChangeMario(new NormalMario(base.mg));
-			base.scroe = 0;
+			base.mg.scroe = 0;
 		}
 	}
 }

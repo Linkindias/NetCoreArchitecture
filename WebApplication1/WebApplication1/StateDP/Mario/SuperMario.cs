@@ -9,7 +9,7 @@
 		public override void GetSunFlower()
 		{
 			base.mg.ChangeMario(new FireMario(base.mg));
-			base.scroe += 100;
+			base.mg.scroe += 100;
 		}
 
 		public override void GetMushroom()
@@ -19,7 +19,7 @@
 		public override void GetHarm()
 		{
 			base.mg.ChangeMario(new NormalMario(base.mg));
-			base.scroe -= 100;
+			base.mg.scroe -= 100;
 		}
 
 		public override void SetRevive()

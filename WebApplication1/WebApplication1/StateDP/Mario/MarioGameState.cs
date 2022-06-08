@@ -3,15 +3,8 @@
 	public class MarioGameState
 	{
 		private abMarioState currentMario;
-		public EnumMario mario
-		{
-			get => currentMario.mario;
-		}
-
-		public int scroe
-		{
-			get => currentMario.scroe;
-		}
+		public EnumMario mario;
+		public int scroe;
 
 		public MarioGameState()
 		{
@@ -21,10 +14,10 @@
 		public void ChangeMario(abMarioState changeMario)
 		{
 			this.currentMario = changeMario;
-			if (changeMario is FireMario) currentMario.mario = EnumMario.fire;
-			if (changeMario is NormalMario) currentMario.mario = EnumMario.normal;
-			if (changeMario is SuperMario) currentMario.mario = EnumMario.super;
-			if (changeMario is DeadMario) currentMario.mario = EnumMario.dead;
+			if (changeMario is FireMario) mario = EnumMario.fire;
+			if (changeMario is NormalMario) mario = EnumMario.normal;
+			if (changeMario is SuperMario) mario = EnumMario.super;
+			if (changeMario is DeadMario) mario = EnumMario.dead;
 		}
 
 		public void GetSunFlower()

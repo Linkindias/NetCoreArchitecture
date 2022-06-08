@@ -4,9 +4,6 @@
 	{
 		protected MarioGameState mg;
 
-		public  EnumMario mario;
-		public  int scroe;
-
 		protected abMarioState(MarioGameState mg) => this.mg = mg;
 
 		public abstract void GetSunFlower();
